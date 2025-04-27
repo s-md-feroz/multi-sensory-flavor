@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom flavor app colors
+				flavor: {
+					mint: '#C9F0D6',
+					lavender: '#E2D1F9',
+					peach: '#FFD8BE',
+					orange: '#FF8C42',
+					purple: '#7D56A0',
+					pink: '#FFC2D1',
+					yellow: '#FFF07C',
+					blue: '#A5D8FF',
 				}
 			},
 			borderRadius: {
@@ -70,25 +82,41 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'float-slow': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-5px)' }
+				},
+				'swirl': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
+				},
+				'pulse-gentle': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 3s ease-in-out infinite',
+				'float-slow': 'float-slow 5s ease-in-out infinite',
+				'swirl': 'swirl 20s linear infinite',
+				'pulse-gentle': 'pulse-gentle 3s ease-in-out infinite'
+			},
+			fontFamily: {
+				heading: ['var(--font-heading)', 'sans-serif'],
+				body: ['var(--font-body)', 'sans-serif']
 			}
 		}
 	},
