@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,8 +14,8 @@ import {
   generateFlavorProfileDescription
 } from '@/utils/flavorEngine';
 import { Cookie, CandyOff, Lollipop, Candy } from 'lucide-react';
+import FlavorProfileChart from '@/components/FlavorProfileChart';
 
-// Sensory category configuration
 const tasteCategories: { value: TasteCategory; label: string; color: string }[] = [
   { value: 'sweet', label: 'Sweet', color: 'bg-flavor-pink text-black' },
   { value: 'salty', label: 'Salty', color: 'bg-flavor-blue text-black' },
@@ -45,7 +44,6 @@ const textureCategories: { value: TextureCategory; label: string }[] = [
   { value: 'tender', label: 'Tender' },
 ];
 
-// Component for each ingredient card
 const IngredientCard = ({ 
   ingredient, 
   isSelected, 
@@ -109,7 +107,6 @@ const FlavorBuilder = () => {
   const [recommendations, setRecommendations] = useState<Ingredient[]>([]);
   const [flavorProfile, setFlavorProfile] = useState<string>("");
   
-  // Update filtered ingredients based on selected filters
   useEffect(() => {
     let results = [...allIngredients];
     
@@ -134,14 +131,12 @@ const FlavorBuilder = () => {
     setFilteredIngredients(results);
   }, [selectedFilters]);
   
-  // Update recommendations when selected ingredients change
   useEffect(() => {
     if (selectedIngredients.length > 0) {
       const selectedIds = selectedIngredients.map(ing => ing.id);
       const complementary = getComplementaryIngredients(selectedIds);
       setRecommendations(complementary);
       
-      // Generate flavor profile description
       const profileDesc = generateFlavorProfileDescription(selectedIds);
       setFlavorProfile(profileDesc);
     } else {
@@ -170,10 +165,8 @@ const FlavorBuilder = () => {
       const index = prev.findIndex(ing => ing.id === ingredient.id);
       
       if (index >= 0) {
-        // Remove ingredient
         return prev.filter(ing => ing.id !== ingredient.id);
       } else {
-        // Add ingredient (max 5)
         if (prev.length >= 5) {
           toast.error("Maximum 5 ingredients allowed. Remove some before adding more.");
           return prev;
@@ -198,8 +191,6 @@ const FlavorBuilder = () => {
       return;
     }
     
-    // In a real app, this would save to a database or localStorage
-    // For now, just show a success toast
     toast.success("Flavor combination saved to your mood board!");
   };
   
@@ -214,7 +205,6 @@ const FlavorBuilder = () => {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sensory Selection Panel */}
           <div>
             <Card>
               <CardContent className="p-6">
@@ -307,7 +297,6 @@ const FlavorBuilder = () => {
             </Card>
           </div>
           
-          {/* Flavor Mixing Panel */}
           <div className="lg:col-span-2">
             <Card className="mb-6">
               <CardContent className="p-6">
@@ -320,18 +309,21 @@ const FlavorBuilder = () => {
                 
                 <div className="mb-6">
                   {selectedIngredients.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                      {selectedIngredients.map(ingredient => (
-                        <Card key={ingredient.id} className="cursor-pointer hover:bg-muted/50" onClick={() => handleSelectIngredient(ingredient)}>
-                          <CardContent className="p-3 text-center">
-                            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
-                              <Candy className="h-6 w-6 text-primary" />
-                            </div>
-                            <p className="font-medium text-sm">{ingredient.name}</p>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
+                    <>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                        {selectedIngredients.map(ingredient => (
+                          <Card key={ingredient.id} className="cursor-pointer hover:bg-muted/50" onClick={() => handleSelectIngredient(ingredient)}>
+                            <CardContent className="p-3 text-center">
+                              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2">
+                                <Candy className="h-6 w-6 text-primary" />
+                              </div>
+                              <p className="font-medium text-sm">{ingredient.name}</p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      <FlavorProfileChart ingredients={selectedIngredients} />
+                    </>
                   ) : (
                     <div className="text-center py-12 bg-muted/20 rounded-lg">
                       <Lollipop className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
@@ -360,7 +352,6 @@ const FlavorBuilder = () => {
               </CardContent>
             </Card>
             
-            {/* Recommendations */}
             {recommendations.length > 0 && (
               <Card>
                 <CardContent className="p-6">
