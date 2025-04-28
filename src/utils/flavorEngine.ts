@@ -2,7 +2,7 @@
 // Types for our flavor system
 export type TasteCategory = 'sweet' | 'salty' | 'sour' | 'bitter' | 'umami';
 export type SmellCategory = 'floral' | 'fruity' | 'spicy' | 'earthy' | 'woody' | 'herbal' | 'smoky';
-export type TextureCategory = 'crispy' | 'crunchy' | 'creamy' | 'smooth' | 'fizzy' | 'chewy' | 'tender';
+export type TextureCategory = 'crispy' | 'crunchy' | 'creamy' | 'smooth' | 'fizzy' | 'chewy' | 'tender' | 'juicy';
 export type SoundCategory = 'crunchy' | 'fizzy' | 'snappy' | 'sizzling' | 'creamy' | 'silent';
 export type VisualCategory = 'vibrant' | 'colorful' | 'monochromatic' | 'patterned' | 'glossy' | 'matte';
 
