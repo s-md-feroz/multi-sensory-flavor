@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from "@/components/ui/use-theme"
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -27,7 +28,11 @@ const navLinks = [
 ];
 
 const Navbar: React.FC = () => {
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
 
   return (
     <nav className="bg-background border-b border-border h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -44,7 +49,7 @@ const Navbar: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => setTheme(theme => (theme === "light" ? "dark" : "light"))}
+          onClick={toggleTheme}
         >
           Toggle Theme
         </Button>
@@ -70,7 +75,7 @@ const Navbar: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setTheme(theme => (theme === "light" ? "dark" : "light"))}
+              onClick={toggleTheme}
             >
               Toggle Theme
             </Button>

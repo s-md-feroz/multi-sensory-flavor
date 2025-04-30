@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Mic, MicOff, Save } from 'lucide-react';
 import { parseSpeechInput } from '@/utils/flavor/experiences';
 import { toast } from 'sonner';

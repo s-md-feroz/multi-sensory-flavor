@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import FlavorBuilder from "./pages/FlavorBuilder";
@@ -16,22 +17,24 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/flavor-builder" element={<FlavorBuilder />} />
-            <Route path="/mood-board" element={<MoodBoard />} />
-            <Route path="/challenges" element={<Challenges />} />
-            <Route path="/sensory-journal" element={<SensoryJournal />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider attribute="class">
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/flavor-builder" element={<FlavorBuilder />} />
+              <Route path="/mood-board" element={<MoodBoard />} />
+              <Route path="/challenges" element={<Challenges />} />
+              <Route path="/sensory-journal" element={<SensoryJournal />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
