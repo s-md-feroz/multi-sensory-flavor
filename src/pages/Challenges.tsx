@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { MoodCategory, generateMoodChallenge, Ingredient } from '@/utils/flavor';
 import { Candy, Cherry, Cookie, CandyOff, Lollipop } from 'lucide-react';
+import MoodSensoryChart from '@/components/MoodSensoryChart';
 
 const moodCategories: { value: MoodCategory; label: string; icon: JSX.Element; description: string; colorClass: string }[] = [
   { value: 'cozy', label: 'Cozy', icon: <Cookie className="h-6 w-6" />, description: 'Warm, comforting flavors that feel like a hug', colorClass: 'bg-flavor-lavender text-flavor-purple' },
@@ -152,6 +152,12 @@ const Challenges = () => {
                     </div>
                   </div>
                 ))}
+              </CardContent>
+              
+              {/* Add the Mood Sensory Chart here */}
+              <CardContent className="pt-0">
+                <h3 className="font-heading font-medium mb-2">Sensory Profile</h3>
+                <MoodSensoryChart moodCategory={state.activeMood} />
               </CardContent>
             </Card>
           </div>
