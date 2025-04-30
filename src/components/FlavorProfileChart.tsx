@@ -74,10 +74,12 @@ const FlavorProfileChart = ({ ingredients }: FlavorProfileChartProps) => {
           />
           <Tooltip content={({ active, payload }) => {
             if (active && payload && payload.length) {
+              const value = payload[0].value;
+              const formattedValue = typeof value === 'number' ? value.toFixed(1) : value;
               return (
                 <div className="bg-background p-2 border border-border rounded-md shadow-md">
                   <p className="font-medium">{payload[0].payload.category}</p>
-                  <p className="text-sm">{`Value: ${payload[0].value.toFixed(1)}%`}</p>
+                  <p className="text-sm">{`Value: ${formattedValue}%`}</p>
                 </div>
               );
             }
