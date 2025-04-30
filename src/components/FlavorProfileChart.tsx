@@ -6,6 +6,8 @@ import {
   PolarGrid,
   PolarAngleAxis,
   ResponsiveContainer,
+  Tooltip,
+  Legend
 } from 'recharts';
 import { ChartContainer } from '@/components/ui/chart';
 import { Ingredient } from '@/utils/flavorEngine';
@@ -70,6 +72,18 @@ const FlavorProfileChart = ({ ingredients }: FlavorProfileChartProps) => {
             fill="var(--color-radar)"
             fillOpacity={0.3}
           />
+          <Tooltip content={({ active, payload }) => {
+            if (active && payload && payload.length) {
+              return (
+                <div className="bg-background p-2 border border-border rounded-md shadow-md">
+                  <p className="font-medium">{payload[0].payload.category}</p>
+                  <p className="text-sm">{`Value: ${payload[0].value.toFixed(1)}%`}</p>
+                </div>
+              );
+            }
+            return null;
+          }} />
+          <Legend />
         </RadarChart>
       </ChartContainer>
     </div>
