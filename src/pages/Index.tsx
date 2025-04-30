@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import MoodBasedRecommendations from '@/components/MoodBasedRecommendations';
 import FlavorProfileChart from '@/components/FlavorProfileChart';
-import { Ingredient } from '@/utils/flavorEngine';
+import { Ingredient } from '@/utils/flavor';
 import { Badge } from "@/components/ui/badge";
 import { Lollipop, Search } from 'lucide-react';
 

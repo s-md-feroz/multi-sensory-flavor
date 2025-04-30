@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,7 +13,7 @@ import {
   TextureCategory,
   getComplementaryIngredients,
   generateFlavorProfileDescription
-} from '@/utils/flavorEngine';
+} from '@/utils/flavor';
 import { Cookie, CandyOff, Lollipop, Candy } from 'lucide-react';
 import FlavorProfileChart from '@/components/FlavorProfileChart';
 

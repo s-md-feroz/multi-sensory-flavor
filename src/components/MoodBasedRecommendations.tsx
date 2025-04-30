@@ -7,7 +7,7 @@ import {
   MoodCategory, 
   generateMoodChallenge,
   Ingredient 
-} from '@/utils/flavorEngine';
+} from '@/utils/flavor';
 import { Heart, Star, Smile, Zap, Coffee, Cloud } from 'lucide-react';
 
 interface MoodBasedRecommendationsProps {

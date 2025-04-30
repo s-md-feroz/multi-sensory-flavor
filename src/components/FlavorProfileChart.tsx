@@ -10,7 +10,7 @@ import {
   Legend
 } from 'recharts';
 import { ChartContainer } from '@/components/ui/chart';
-import { Ingredient } from '@/utils/flavorEngine';
+import { Ingredient } from '@/utils/flavor';
 
 interface FlavorProfileChartProps {
   ingredients: Ingredient[];
