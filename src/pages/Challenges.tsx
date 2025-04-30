@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { MoodCategory, generateMoodChallenge, Ingredient } from '@/utils/flavorEngine';
+import { MoodCategory, generateMoodChallenge, Ingredient } from '@/utils/flavor';
 import { Candy, Cherry, Cookie, CandyOff, Lollipop } from 'lucide-react';
 
 const moodCategories: { value: MoodCategory; label: string; icon: JSX.Element; description: string; colorClass: string }[] = [
