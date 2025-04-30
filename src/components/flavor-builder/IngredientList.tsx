@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Ingredient } from '@/utils/flavor';
+import { Ingredient } from '@/utils/flavor/types';
 import { CandyOff } from 'lucide-react';
 import IngredientCard from './IngredientCard';
 
