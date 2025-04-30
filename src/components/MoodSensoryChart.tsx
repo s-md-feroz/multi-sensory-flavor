@@ -1,8 +1,8 @@
 
 import React from 'react';
 import {
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -75,11 +75,11 @@ const moodColors: Record<MoodCategory, string> = {
 
 const MoodSensoryChart = ({ moodCategory }: MoodSensoryChartProps) => {
   const data = moodSensoryData[moodCategory];
-  const barColor = moodColors[moodCategory];
+  const areaColor = moodColors[moodCategory];
   
   const chartConfig = {
-    bar: {
-      color: barColor
+    area: {
+      color: areaColor
     }
   };
 
@@ -87,19 +87,21 @@ const MoodSensoryChart = ({ moodCategory }: MoodSensoryChartProps) => {
     <div className="w-full h-[300px] mt-4">
       <ChartContainer config={chartConfig}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 20 }}>
+          <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
             <XAxis dataKey="name" tick={{ fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} />
             <Tooltip content={<ChartTooltipContent />} />
             <Legend />
-            <Bar
+            <Area
+              type="monotone"
               dataKey="value"
               name="Intensity"
-              fill="var(--color-bar)"
-              radius={[4, 4, 0, 0]}
+              stroke={areaColor}
+              fill={`${areaColor}80`}
+              activeDot={{ r: 6 }}
             />
-          </BarChart>
+          </AreaChart>
         </ResponsiveContainer>
       </ChartContainer>
     </div>
