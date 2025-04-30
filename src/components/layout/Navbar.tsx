@@ -11,7 +11,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Menu } from "lucide-react";
+import { Menu, Sun, Moon } from "lucide-react";
+import { Toggle } from "@/components/ui/toggle";
 
 interface NavLink {
   path: string;
@@ -46,13 +47,14 @@ const Navbar: React.FC = () => {
             {link.label}
           </Link>
         ))}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={toggleTheme}
+        <Toggle 
+          pressed={theme === "dark"} 
+          onPressedChange={toggleTheme}
+          aria-label="Toggle theme"
+          className="p-2"
         >
-          Toggle Theme
-        </Button>
+          {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+        </Toggle>
       </div>
 
       <Sheet>
@@ -72,13 +74,17 @@ const Navbar: React.FC = () => {
                 {link.label}
               </Link>
             ))}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleTheme}
-            >
-              Toggle Theme
-            </Button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm">Theme:</span>
+              <Toggle 
+                pressed={theme === "dark"} 
+                onPressedChange={toggleTheme}
+                aria-label="Toggle theme"
+                className="p-2"
+              >
+                {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </Toggle>
+            </div>
           </div>
         </SheetContent>
       </Sheet>
