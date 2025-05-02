@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Mic, MicOff, Save } from 'lucide-react';
+import { Mic, MicOff, Save, AlertTriangle } from 'lucide-react';
 import { parseSpeechInput } from '@/utils/flavor/experiences';
 import { toast } from 'sonner';
 import { ingredients } from '@/utils/flavor/ingredients';
@@ -24,29 +25,79 @@ const SpeechInput: React.FC<SpeechInputProps> = ({ onSave }) => {
     ingredients: string[];
     notes: string;
   } | null>(null);
+  const [speechSupported, setSpeechSupported] = useState(true);
+  const recognitionRef = useRef<any>(null);
+
+  // Check if browser supports the Web Speech API
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      console.error('Speech recognition not supported in this browser.');
+    }
+  }, []);
 
   const startListening = () => {
-    // This is a placeholder - in a real implementation, we would use the Web Speech API
-    setIsListening(true);
-    toast.info("Listening to your flavor description...");
+    if (!speechSupported) {
+      toast.error("Speech recognition not supported in this browser");
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognitionRef.current = new SpeechRecognition();
     
-    // Simulate speech recognition after a delay
-    setTimeout(() => {
-      stopListening();
-    }, 3000);
+    recognitionRef.current.continuous = true;
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.lang = 'en-US';
+
+    recognitionRef.current.onstart = () => {
+      setIsListening(true);
+      toast.info("Listening to your flavor description...");
+    };
+
+    recognitionRef.current.onresult = (event: any) => {
+      const current = event.resultIndex;
+      const result = event.results[current];
+      
+      if (result.isFinal) {
+        const finalTranscript = result[0].transcript;
+        setTranscript(prevTranscript => prevTranscript + ' ' + finalTranscript);
+        
+        // Enhanced analysis with the parseSpeechInput function
+        const parsed = parseSpeechInput(finalTranscript);
+        setParsedData(prev => ({
+          mood: parsed.mood || prev?.mood,
+          ingredients: [...(prev?.ingredients || []), ...parsed.ingredients],
+          notes: (prev?.notes || '') + ' ' + parsed.notes
+        }));
+      }
+    };
+
+    recognitionRef.current.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+      if (event.error === 'not-allowed') {
+        toast.error("Microphone access was denied. Please allow access to use voice input.");
+      } else {
+        toast.error(`Speech recognition error: ${event.error}`);
+      }
+      setIsListening(false);
+    };
+
+    recognitionRef.current.onend = () => {
+      if (isListening) {
+        setIsListening(false);
+        toast.success("Speech capture complete!");
+      }
+    };
+
+    recognitionRef.current.start();
   };
 
   const stopListening = () => {
-    setIsListening(false);
-    // Simulate received transcript
-    const simulatedTranscript = "I had a refreshing lime drink with basil that was so energizing on a hot day";
-    setTranscript(simulatedTranscript);
-    
-    // Parse the transcript
-    const parsed = parseSpeechInput(simulatedTranscript);
-    setParsedData(parsed);
-    
-    toast.success("Speech captured successfully!");
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
   };
 
   const handleManualInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -81,26 +132,35 @@ const SpeechInput: React.FC<SpeechInputProps> = ({ onSave }) => {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground mb-4">
-          Describe your flavor experience by voice or text. Our system will analyze your description to
+          Describe your flavor experience by voice or text. Our AI system will analyze your description to
           identify ingredients, mood, and context.
         </p>
         
         <div className="mb-4">
-          <Button 
-            variant={isListening ? "destructive" : "default"}
-            onClick={isListening ? stopListening : startListening}
-            className="w-full flex items-center justify-center gap-2"
-          >
-            {isListening ? (
-              <>
-                <MicOff size={16} /> Stop Recording
-              </>
-            ) : (
-              <>
-                <Mic size={16} /> Start Recording
-              </>
-            )}
-          </Button>
+          {!speechSupported ? (
+            <div className="flex items-center gap-2 p-3 bg-destructive/10 rounded-md border border-destructive/30 mb-4">
+              <AlertTriangle size={16} className="text-destructive" />
+              <p className="text-sm text-destructive">
+                Speech recognition is not supported in your browser. Please use text input instead.
+              </p>
+            </div>
+          ) : (
+            <Button 
+              variant={isListening ? "destructive" : "default"}
+              onClick={isListening ? stopListening : startListening}
+              className="w-full flex items-center justify-center gap-2"
+            >
+              {isListening ? (
+                <>
+                  <MicOff size={16} /> Stop Recording
+                </>
+              ) : (
+                <>
+                  <Mic size={16} /> Start Recording
+                </>
+              )}
+            </Button>
+          )}
         </div>
         
         <div className="mb-4">
@@ -114,7 +174,7 @@ const SpeechInput: React.FC<SpeechInputProps> = ({ onSave }) => {
 
         {parsedData && (
           <div className="bg-muted/20 rounded-lg p-4 mb-4">
-            <h3 className="text-sm font-medium mb-2">Detected Elements:</h3>
+            <h3 className="text-sm font-medium mb-2">AI-Detected Elements:</h3>
             
             {parsedData.mood && (
               <div className="mb-2">

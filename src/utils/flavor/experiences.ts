@@ -1,4 +1,3 @@
-
 import { Ingredient, MoodCategory } from './types';
 
 export interface FlavorExperience {
@@ -175,49 +174,125 @@ export const matchImageToExperience = (imageData: string): FlavorExperience | nu
   return sampleExperiences[randomIndex];
 };
 
-// Function to parse speech input (placeholder for NLP feature)
+// Function to parse speech input with enhanced NLP capabilities
 export const parseSpeechInput = (speechText: string): {
   mood?: MoodCategory;
   ingredients: string[];
   notes: string;
 } => {
-  // This would integrate with an NLP service
-  // For now, we'll do simple keyword matching as a placeholder
+  // Enhanced mood detection with synonym expansion and fuzzy matching
   const moodKeywords: Record<MoodCategory, string[]> = {
-    'cozy': ['cozy', 'comfort', 'warm', 'homey'],
-    'adventurous': ['adventurous', 'exciting', 'bold', 'unusual'],
-    'refreshing': ['refreshing', 'cool', 'light', 'crisp'],
-    'romantic': ['romantic', 'indulgent', 'rich', 'sensual'],
-    'energizing': ['energizing', 'invigorating', 'bright', 'lively'],
-    'calming': ['calming', 'soothing', 'relaxing', 'gentle']
+    'cozy': ['cozy', 'comfort', 'comfortable', 'warm', 'homey', 'snug', 'relaxing', 'hygge', 'cosy', 'familiar'],
+    'adventurous': ['adventurous', 'exciting', 'bold', 'unusual', 'daring', 'novel', 'exotic', 'unexpected', 'surprising', 'unique'],
+    'refreshing': ['refreshing', 'cool', 'light', 'crisp', 'fresh', 'bright', 'revitalizing', 'invigorating', 'rejuvenating', 'clean'],
+    'romantic': ['romantic', 'indulgent', 'rich', 'sensual', 'velvety', 'decadent', 'luxurious', 'dreamy', 'intimate', 'passionate'],
+    'energizing': ['energizing', 'invigorating', 'bright', 'lively', 'zesty', 'zingy', 'stimulating', 'vibrant', 'punchy', 'dynamic'],
+    'calming': ['calming', 'soothing', 'relaxing', 'gentle', 'mild', 'serene', 'peaceful', 'mellow', 'tranquil', 'subtle']
   };
   
-  // Simple detection of mood from text
-  let detectedMood: MoodCategory | undefined;
+  // Enhanced mood detection algorithm with context awareness
+  const lowerText = speechText.toLowerCase();
+  const words = lowerText.split(/\W+/); // Split by non-word characters
+  
+  // Calculate mood scores based on word frequency and importance
+  const moodScores: Record<MoodCategory, number> = {
+    'cozy': 0,
+    'adventurous': 0,
+    'refreshing': 0,
+    'romantic': 0,
+    'energizing': 0,
+    'calming': 0
+  };
+  
+  // Score calculation based on keyword presence
   for (const [mood, keywords] of Object.entries(moodKeywords) as [MoodCategory, string[]][]) {
-    if (keywords.some(keyword => speechText.toLowerCase().includes(keyword))) {
-      detectedMood = mood;
-      break;
-    }
+    keywords.forEach(keyword => {
+      if (lowerText.includes(keyword)) {
+        // Give higher score for exact matches
+        moodScores[mood] += lowerText.split(keyword).length - 1;
+      }
+      
+      // Check for partial matches in words
+      words.forEach(word => {
+        if (word.length > 3 && keyword.includes(word)) {
+          moodScores[mood] += 0.5;
+        }
+      });
+    });
+  }
+
+  // Context modifiers - adjust scores based on context
+  if (lowerText.includes('hot day') || lowerText.includes('summer')) {
+    moodScores['refreshing'] += 1;
+    moodScores['energizing'] += 0.5;
   }
   
-  // Simple detection of ingredients (placeholder)
-  const detectedIngredients: string[] = [];
-  const lowerText = speechText.toLowerCase();
+  if (lowerText.includes('winter') || lowerText.includes('cold')) {
+    moodScores['cozy'] += 1;
+  }
   
-  // Just check for known ingredients from our database
-  const ingredientNames = ['strawberry', 'chocolate', 'salt', 'cinnamon', 'lime', 
-    'mushroom', 'honey', 'chips', 'basil', 'bacon'];
+  if (lowerText.includes('dinner') && lowerText.includes('special')) {
+    moodScores['romantic'] += 1;
+  }
   
-  ingredientNames.forEach((name, index) => {
-    if (lowerText.includes(name)) {
-      detectedIngredients.push((index + 1).toString()); // Map to our ingredient IDs
+  // Determine highest scoring mood
+  let detectedMood: MoodCategory | undefined;
+  let highestScore = 0;
+  
+  Object.entries(moodScores).forEach(([mood, score]) => {
+    if (score > highestScore) {
+      highestScore = score;
+      detectedMood = mood as MoodCategory;
     }
   });
   
+  // Only assign mood if the score is significant
+  if (highestScore < 0.5) {
+    detectedMood = undefined;
+  }
+  
+  // Enhanced ingredient detection with fuzzy matching and context awareness
+  const detectedIngredients: string[] = [];
+  
+  // Extended list of ingredients with variations
+  const ingredientVariations: Record<string, string[]> = {
+    '1': ['strawberry', 'strawberries', 'sweet berry'],
+    '2': ['chocolate', 'chocolatey', 'cocoa', 'cacao'],
+    '3': ['salt', 'salty', 'sea salt', 'saline'],
+    '4': ['cinnamon', 'cinnamony', 'spiced', 'cassia'],
+    '5': ['lime', 'limes', 'lime juice', 'citrus'],
+    '6': ['mushroom', 'mushrooms', 'fungi', 'umami'],
+    '7': ['honey', 'honeyed', 'sweet', 'nectar'],
+    '8': ['chips', 'crisps', 'potato chips', 'fried'],
+    '9': ['basil', 'fresh herbs', 'herb', 'aromatic'],
+    '10': ['bacon', 'smoky', 'pork', 'pancetta']
+  };
+  
+  // Check for ingredient mentions
+  for (const [id, variations] of Object.entries(ingredientVariations)) {
+    for (const variation of variations) {
+      if (lowerText.includes(variation)) {
+        detectedIngredients.push(id);
+        break;
+      }
+    }
+  }
+  
+  // Detect compound ingredient descriptions (like "dark chocolate" or "sea salt")
+  if (lowerText.includes('dark chocolate') || lowerText.includes('bitter chocolate')) {
+    detectedIngredients.push('2'); // Dark chocolate
+  }
+  
+  if (lowerText.includes('sea salt') || lowerText.includes('flaky salt')) {
+    detectedIngredients.push('3'); // Sea salt
+  }
+  
+  // Remove duplicates
+  const uniqueIngredients = [...new Set(detectedIngredients)];
+  
   return {
     mood: detectedMood,
-    ingredients: detectedIngredients,
+    ingredients: uniqueIngredients,
     notes: speechText
   };
 };
