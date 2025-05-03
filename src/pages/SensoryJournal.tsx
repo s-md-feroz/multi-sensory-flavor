@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 const SensoryJournal = () => {
   const [selectedExperience, setSelectedExperience] = useState<FlavorExperience | null>(null);
   const [selectedTab, setSelectedTab] = useState("timeline");
+  const [currentLanguage, setCurrentLanguage] = useState("English");
 
   const handleExperienceSelect = (experience: FlavorExperience) => {
     setSelectedExperience(experience);
@@ -34,6 +35,11 @@ const SensoryJournal = () => {
     // In a real app, this would save to a database
     toast.success("Your flavor experience has been saved to your journal!");
     setSelectedTab("timeline");
+  };
+
+  const handleLanguageChange = (language: string) => {
+    setCurrentLanguage(language);
+    toast.info(`Switched to ${language}`);
   };
 
   return (
@@ -126,32 +132,39 @@ const SensoryJournal = () => {
               </p>
               <div className="grid grid-cols-2 gap-2">
                 <Button 
-                  variant="outline" 
+                  variant={currentLanguage === "English" ? "default" : "outline"}
                   className="flex items-center gap-2"
-                  onClick={() => toast.info("Switched to English")}
+                  onClick={() => handleLanguageChange("English")}
                 >
                   <Globe size={16} /> English
                 </Button>
                 <Button 
-                  variant="outline"
+                  variant={currentLanguage === "Español" ? "default" : "outline"}
                   className="flex items-center gap-2"
-                  onClick={() => toast.info("Switched to Spanish")}
+                  onClick={() => handleLanguageChange("Español")}
                 >
                   <Globe size={16} /> Español
                 </Button>
                 <Button 
-                  variant="outline"
+                  variant={currentLanguage === "Français" ? "default" : "outline"}
                   className="flex items-center gap-2"
-                  onClick={() => toast.info("Switched to French")}
+                  onClick={() => handleLanguageChange("Français")}
                 >
                   <Globe size={16} /> Français
                 </Button>
                 <Button 
-                  variant="outline"
+                  variant={currentLanguage === "日本語" ? "default" : "outline"}
                   className="flex items-center gap-2"
-                  onClick={() => toast.info("Switched to Japanese")}
+                  onClick={() => handleLanguageChange("日本語")}
                 >
                   <Globe size={16} /> 日本語
+                </Button>
+                <Button 
+                  variant={currentLanguage === "हिन्दी" ? "default" : "outline"}
+                  className="flex items-center gap-2"
+                  onClick={() => handleLanguageChange("हिन्दी")}
+                >
+                  <Globe size={16} /> हिन्दी
                 </Button>
               </div>
             </CardContent>
