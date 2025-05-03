@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { IngredientCard } from './IngredientCard';
+import IngredientCard from './IngredientCard'; // Fixed import
 import { Ingredient } from '@/utils/flavor';
 
 interface FlavorMixPanelProps {
@@ -56,7 +56,7 @@ const FlavorMixPanel: React.FC<FlavorMixPanelProps> = ({
                   key={ingredient.id}
                   ingredient={ingredient}
                   isSelected={true}
-                  onClick={() => handleSelectIngredient(ingredient)}
+                  onSelect={handleSelectIngredient}
                 />
               ))}
             </div>

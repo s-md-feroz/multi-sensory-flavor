@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Available languages
@@ -26,7 +27,7 @@ interface LanguageProviderProps {
 }
 
 // All translations
-export const translations = {
+export const translations: Record<Language, Record<string, string>> = {
   "English": {
     // Common translations
     share: "Share",
@@ -237,9 +238,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     const currentTranslations = translations[currentLanguage];
     
     // Return the translation or the key itself if not found
-    return currentTranslations && currentTranslations[key as keyof typeof currentTranslations]
-      ? currentTranslations[key as keyof typeof currentTranslations]
-      : translations.English[key as keyof translations.English] || key;
+    return currentTranslations && currentTranslations[key]
+      ? currentTranslations[key]
+      : translations.English[key] || key;
   };
 
   const value = {
