@@ -1,36 +1,42 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Ingredient, TasteCategory } from '@/utils/flavor';
-import IngredientCard from './IngredientCard';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { IngredientCard } from './IngredientCard';
+import { Ingredient } from '@/utils/flavor';
 
 interface RecommendationsPanelProps {
   recommendations: Ingredient[];
   selectedIngredients: Ingredient[];
   handleSelectIngredient: (ingredient: Ingredient) => void;
-  tasteCategoriesColors: Record<TasteCategory, string>;
+  tasteCategoriesColors: Record<string, string>;
+  t: (key: string) => string;
 }
 
-const RecommendationsPanel = ({
+const RecommendationsPanel: React.FC<RecommendationsPanelProps> = ({
   recommendations,
   selectedIngredients,
   handleSelectIngredient,
-  tasteCategoriesColors
-}: RecommendationsPanelProps) => {
-  if (recommendations.length === 0) return null;
+  tasteCategoriesColors,
+  t
+}) => {
+  if (recommendations.length === 0 || selectedIngredients.length === 0) {
+    return null;
+  }
   
   return (
     <Card>
       <CardContent className="p-6">
-        <h2 className="font-heading font-bold text-xl mb-4">Suggested Pairings</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <h3 className="font-heading font-bold text-lg mb-4">{t('recommendedCombinations')}</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {recommendations.map(ingredient => (
             <IngredientCard
               key={ingredient.id}
               ingredient={ingredient}
               isSelected={selectedIngredients.some(ing => ing.id === ingredient.id)}
-              onSelect={handleSelectIngredient}
-              tasteCategoriesColors={tasteCategoriesColors}
+              onClick={() => handleSelectIngredient(ingredient)}
+              btnText={t('tryThis')}
             />
           ))}
         </div>

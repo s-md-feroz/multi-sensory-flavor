@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Ingredient, 
   ingredients as allIngredients, 
@@ -25,6 +26,7 @@ import {
 } from '@/components/flavor-builder/constants';
 
 const FlavorBuilder = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('taste');
   const [selectedFilters, setSelectedFilters] = useState<{
     taste: TasteCategory[];
@@ -132,9 +134,9 @@ const FlavorBuilder = () => {
     <div className="min-h-screen animated-gradient">
       <div className="container py-8">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-heading font-bold mb-2">Flavor Builder</h1>
+          <h1 className="text-3xl md:text-4xl font-heading font-bold mb-2">{t('flavorBuilderTitle')}</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Create unique flavor combinations using the science of multisensory design
+            {t('flavorBuilderDescription')}
           </p>
         </div>
         
@@ -153,7 +155,7 @@ const FlavorBuilder = () => {
                 />
                 
                 <div className="mt-6">
-                  <h3 className="font-heading font-bold mb-3">Filtered Ingredients</h3>
+                  <h3 className="font-heading font-bold mb-3">{t('filteredIngredients')}</h3>
                   <IngredientList
                     filteredIngredients={filteredIngredients}
                     selectedIngredients={selectedIngredients}
@@ -172,6 +174,7 @@ const FlavorBuilder = () => {
               handleSelectIngredient={handleSelectIngredient}
               handleClearSelection={handleClearSelection}
               handleSaveFlavorCombination={handleSaveFlavorCombination}
+              t={t}
             />
             
             <RecommendationsPanel
@@ -179,6 +182,7 @@ const FlavorBuilder = () => {
               selectedIngredients={selectedIngredients}
               handleSelectIngredient={handleSelectIngredient}
               tasteCategoriesColors={tasteCategoriesColorMap}
+              t={t}
             />
           </div>
         </div>
