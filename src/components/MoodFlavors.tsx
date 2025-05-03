@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { MoodCategory } from '@/utils/flavor/types';
 import { suggestDishesByMood } from '@/utils/flavor/experiences';
 import { Cloud, Heart, Smile, Star, Zap, Coffee } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface MoodFlavorsProps {
   onSelectDish?: (dish: string) => void;
@@ -38,6 +39,9 @@ const MoodFlavors: React.FC<MoodFlavorsProps> = ({ onSelectDish }) => {
   const handleSelectDish = (dish: string) => {
     if (onSelectDish) {
       onSelectDish(dish);
+      toast.success(`Selected: ${dish}`);
+    } else {
+      toast.info(`You selected: ${dish}`);
     }
   };
 

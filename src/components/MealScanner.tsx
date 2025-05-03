@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
@@ -18,35 +18,79 @@ const MealScanner: React.FC<MealScannerProps> = ({ onMatch }) => {
   const [matchedExperience, setMatchedExperience] = useState<FlavorExperience | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   
+  // Clean up camera stream when component unmounts
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
   const activateCamera = async () => {
     try {
-      // This is a placeholder - in a real implementation, we would use the Web Media API
-      setIsCameraActive(true);
-      toast.info("Camera activated! Position your meal in the frame.");
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 } 
+        } 
+      });
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+        setIsCameraActive(true);
+        toast.success("Camera activated! Position your meal in the frame.");
+      }
     } catch (error) {
+      console.error("Camera access error:", error);
       toast.error("Could not access camera. Please check permissions.");
     }
   };
 
   const stopCamera = () => {
-    // Cleanup camera stream
-    if (isCameraActive && videoRef.current && videoRef.current.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      const tracks = stream.getTracks();
-      tracks.forEach(track => track.stop());
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    
+    if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
+    
     setIsCameraActive(false);
   };
 
   const captureImage = () => {
-    // In a real application, we would capture from video stream
-    // Here we'll simulate by using a placeholder image URL
-    const simulatedImageData = "data:image/jpeg;base64,/9j/example-base64-data";
-    setCapturedImage(simulatedImageData);
-    setIsCameraActive(false);
-    toast.success("Image captured!");
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    
+    if (video && canvas) {
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Draw the current video frame to the canvas
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convert canvas to data URL
+        try {
+          const imageData = canvas.toDataURL('image/jpeg');
+          setCapturedImage(imageData);
+          stopCamera();
+          toast.success("Image captured!");
+        } catch (error) {
+          console.error("Error capturing image:", error);
+          toast.error("Failed to capture image.");
+        }
+      }
+    }
   };
   
   const scanImage = () => {
@@ -106,7 +150,7 @@ const MealScanner: React.FC<MealScannerProps> = ({ onMatch }) => {
           ) : capturedImage ? (
             <div className="relative w-full h-full">
               <img 
-                src="/placeholder.svg" // Using placeholder for demo
+                src={capturedImage}
                 alt="Captured meal" 
                 className="w-full h-full object-cover"
               />
