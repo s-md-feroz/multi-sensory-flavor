@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import IngredientCard from './IngredientCard'; // Fixed import
 import { Ingredient } from '@/utils/flavor';
+import FlavorProfileChart from '@/components/FlavorProfileChart';
 
 interface FlavorMixPanelProps {
   selectedIngredients: Ingredient[];
@@ -61,9 +62,15 @@ const FlavorMixPanel: React.FC<FlavorMixPanelProps> = ({
               ))}
             </div>
             
+            {/* Add the FlavorProfileChart component here */}
+            <div className="mb-6">
+              <h4 className="font-medium mb-2">{t('flavorProfile')}</h4>
+              <FlavorProfileChart ingredients={selectedIngredients} />
+            </div>
+            
             {flavorProfile && (
               <div className="bg-muted/30 p-4 rounded-lg">
-                <h4 className="font-medium mb-2">Flavor Profile:</h4>
+                <h4 className="font-medium mb-2">{t('flavorDescription')}:</h4>
                 <p className="text-sm">{flavorProfile}</p>
               </div>
             )}

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Available languages
@@ -66,7 +65,11 @@ export const translations: Record<Language, Record<string, string>> = {
     clearAll: "Clear All",
     saveFlavorCombination: "Save Flavor Combination",
     recommendedCombinations: "Recommended Combinations",
-    tryThis: "Try This"
+    tryThis: "Try This",
+    
+    // Flavor Profile
+    flavorProfile: "Flavor Profile",
+    flavorDescription: "Flavor Description"
   },
   "हिन्दी": {
     // Common translations
@@ -98,7 +101,7 @@ export const translations: Record<Language, Record<string, string>> = {
     scan: "भोजन स्कैन करें",
     audioCues: "ऑडियो संकेत",
     languageOptions: "भाषा विकल्प",
-    languageDescription: "कई भाषाओं में अपने संवेदी अनुभवों को लॉग करें",
+    languageDescription: "कई भाषाओं में अपने स���वेदी अनुभवों को लॉग करें",
     
     // Flavor Builder
     filteredIngredients: "फ़िल्टर किए गए सामग्री",
@@ -106,7 +109,11 @@ export const translations: Record<Language, Record<string, string>> = {
     clearAll: "सभी हटाएं",
     saveFlavorCombination: "स्वाद संयोजन सहेजें",
     recommendedCombinations: "अनुशंसित संयोजन",
-    tryThis: "इसे आज़माएं"
+    tryThis: "इसे आज़माएं",
+    
+    // Flavor Profile
+    flavorProfile: "स्वाद प्रोफ़ाइल",
+    flavorDescription: "स्वाद विवरण"
   },
   "Español": {
     // Common translations
@@ -146,7 +153,11 @@ export const translations: Record<Language, Record<string, string>> = {
     clearAll: "Limpiar Todo",
     saveFlavorCombination: "Guardar Combinación de Sabores",
     recommendedCombinations: "Combinaciones Recomendadas",
-    tryThis: "Prueba Esto"
+    tryThis: "Prueba Esto",
+    
+    // Flavor Profile
+    flavorProfile: "Perfil de Sabor",
+    flavorDescription: "Descripción del Sabor"
   },
   "Français": {
     // Common translations
@@ -186,7 +197,11 @@ export const translations: Record<Language, Record<string, string>> = {
     clearAll: "Tout Effacer",
     saveFlavorCombination: "Enregistrer la Combinaison de Saveurs",
     recommendedCombinations: "Combinaisons Recommandées",
-    tryThis: "Essayez Ceci"
+    tryThis: "Essayez Ceci",
+    
+    // Flavor Profile
+    flavorProfile: "Profil de Saveur",
+    flavorDescription: "Description de la Saveur"
   },
   "日本語": {
     // Common translations
@@ -226,7 +241,11 @@ export const translations: Record<Language, Record<string, string>> = {
     clearAll: "すべてクリア",
     saveFlavorCombination: "フレーバーの組み合わせを保存",
     recommendedCombinations: "おすすめの組み合わせ",
-    tryThis: "これを試す"
+    tryThis: "これを試す",
+    
+    // Flavor Profile
+    flavorProfile: "フレーバープロファイル",
+    flavorDescription: "味の説明"
   }
 };
 
