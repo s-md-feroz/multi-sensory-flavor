@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button"
 import {
@@ -11,8 +11,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Menu, Sun, Moon } from "lucide-react";
+import { Menu, Sun, Moon, LogOut, User } from "lucide-react";
 import { Toggle } from "@/components/ui/toggle";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 interface NavLink {
   path: string;
@@ -30,9 +32,17 @@ const navLinks = [
 
 const Navbar: React.FC = () => {
   const { setTheme, theme } = useTheme();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("You've been logged out");
+    navigate("/");
   };
 
   return (
@@ -55,6 +65,18 @@ const Navbar: React.FC = () => {
         >
           {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
         </Toggle>
+        
+        {user ? (
+          <Button variant="ghost" onClick={handleSignOut} className="gap-2">
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        ) : (
+          <Button variant="ghost" onClick={() => navigate('/auth')} className="gap-2">
+            <User className="h-4 w-4" />
+            Login
+          </Button>
+        )}
       </div>
 
       <Sheet>
@@ -85,6 +107,17 @@ const Navbar: React.FC = () => {
                 {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
               </Toggle>
             </div>
+            {user ? (
+              <Button variant="ghost" onClick={handleSignOut} className="justify-start gap-2">
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            ) : (
+              <Button variant="ghost" onClick={() => navigate('/auth')} className="justify-start gap-2">
+                <User className="h-4 w-4" />
+                Login
+              </Button>
+            )}
           </div>
         </SheetContent>
       </Sheet>
