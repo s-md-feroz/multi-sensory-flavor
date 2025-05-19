@@ -4,3 +4,4 @@ export * from './types';
 export * from './ingredients';
 export * from './recommendations';
 export * from './profileGenerator';
+export * from './aiSuggestions';
