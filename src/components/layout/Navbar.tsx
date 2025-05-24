@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from "next-themes";
@@ -21,13 +22,13 @@ interface NavLink {
   label: string;
 }
 
-// Update the nav links array to include the SensoryJournal page
 const navLinks = [
   { path: '/', label: 'Home' },
   { path: '/flavor-builder', label: 'Flavor Builder' },
   { path: '/mood-board', label: 'Mood Board' },
   { path: '/challenges', label: 'Challenges' },
-  { path: '/sensory-journal', label: 'Sensory Journal' }
+  { path: '/sensory-journal', label: 'Sensory Journal' },
+  { path: '/ai-hub', label: 'AI Hub' }
 ];
 
 const Navbar: React.FC = () => {
@@ -56,60 +57,22 @@ const Navbar: React.FC = () => {
             </span>
           </Link>
           <nav className="flex items-center gap-4 text-sm lg:gap-6">
-            <Link
-              to="/flavor-builder"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                location.pathname === "/flavor-builder" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Flavor Builder
-            </Link>
-            <Link
-              to="/mood-board"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                location.pathname === "/mood-board" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Mood Board
-            </Link>
-            <Link
-              to="/challenges"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                location.pathname === "/challenges" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Challenges
-            </Link>
-            <Link
-              to="/sensory-journal"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                location.pathname === "/sensory-journal" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Journal
-            </Link>
-            <Link
-              to="/ai-hub"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                location.pathname === "/ai-hub" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              AI Hub
-            </Link>
+            {navLinks.slice(1).map((link: NavLink) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={cn(
+                  "transition-colors hover:text-foreground/80",
+                  location.pathname === link.path ? "text-foreground" : "text-foreground/60"
+                )}
+              >
+                {link.path === '/sensory-journal' ? 'Journal' : link.label}
+              </Link>
+            ))}
           </nav>
         </div>
 
-        <div className="hidden sm:flex items-center gap-4">
-          {navLinks.map((link: NavLink) => (
-            <Link key={link.path} to={link.path} className="text-sm hover:underline">
-              {link.label}
-            </Link>
-          ))}
+        <div className="flex items-center gap-4 ml-auto">
           <Toggle 
             pressed={theme === "dark"} 
             onPressedChange={toggleTheme}
@@ -133,7 +96,7 @@ const Navbar: React.FC = () => {
         </div>
 
         <Sheet>
-          <SheetTrigger className="sm:hidden">
+          <SheetTrigger className="md:hidden ml-2">
             <Menu />
           </SheetTrigger>
           <SheetContent side="left" className="w-64">
