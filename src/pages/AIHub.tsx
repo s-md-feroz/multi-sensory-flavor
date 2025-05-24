@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { 
   Brain, 
   Camera, 
@@ -14,22 +15,31 @@ import {
   Sparkles,
   ChefHat,
   Target,
-  Lightbulb
+  Lightbulb,
+  Upload,
+  Send
 } from 'lucide-react';
 import VoiceAssistant from '@/components/VoiceAssistant';
 import { FlavorRecommendationEngine, UserPreferences, EmotionAwareFoodEngine, EmotionState } from '@/utils/ai/flavorRecommendationEngine';
-import { FoodImageRecognitionEngine } from '@/utils/ai/foodImageRecognition';
+import { FoodImageRecognitionEngine, RecognizedDish } from '@/utils/ai/foodImageRecognition';
 import { CulinaryChatbot } from '@/utils/ai/culinaryChatbot';
-import { MultimodalSensoryPredictor, UserSensoryProfile } from '@/utils/ai/sensoryPredictor';
+import { MultimodalSensoryPredictor, UserSensoryProfile, SatisfactionPrediction } from '@/utils/ai/sensoryPredictor';
+import { getAISuggestions } from '@/utils/flavor/aiSuggestions';
+import { ingredients } from '@/utils/flavor/ingredients';
 import { toast } from 'sonner';
 
 const AIHub = () => {
   const [activeFeature, setActiveFeature] = useState('recommendations');
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageResults, setImageResults] = useState<RecognizedDish[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [sensoryPrediction, setSensoryPrediction] = useState<SatisfactionPrediction | null>(null);
+  const [emotionalRecs, setEmotionalRecs] = useState<any[]>([]);
 
-  // Initialize AI engines
+  // Initialize AI engines with sample data
   const userPreferences: UserPreferences = {
     favoriteIngredients: ['1', '2'], // strawberry, chocolate
     dislikedIngredients: [],
@@ -79,13 +89,18 @@ const AIHub = () => {
     const file = event.target.files?.[0];
     if (file) {
       setImageFile(file);
+      setIsAnalyzing(true);
       toast.info('Analyzing your food image...');
       
       try {
         const results = await imageRecognition.recognizeFood(file);
+        setImageResults(results);
         toast.success(`Identified: ${results[0]?.name || 'Unknown dish'}`);
       } catch (error) {
         toast.error('Failed to analyze image. Please try again.');
+        console.error('Image recognition error:', error);
+      } finally {
+        setIsAnalyzing(false);
       }
     }
   };
@@ -101,6 +116,8 @@ const AIHub = () => {
       const botMessage = { type: 'assistant', content: response.message, id: Date.now() + 1 };
       setChatMessages(prev => [...prev, botMessage]);
     } catch (error) {
+      const errorMessage = { type: 'assistant', content: 'Sorry, I encountered an error. Please try again.', id: Date.now() + 1 };
+      setChatMessages(prev => [...prev, errorMessage]);
       toast.error('Chatbot is temporarily unavailable');
     }
     
@@ -108,22 +125,45 @@ const AIHub = () => {
   };
 
   const generateRecommendations = () => {
-    const recommendations = recommendationEngine.generateRecommendations(3);
-    toast.success(`Generated ${recommendations.length} personalized recommendations!`);
-    return recommendations;
+    try {
+      const recs = recommendationEngine.generateRecommendations(3);
+      setRecommendations(recs);
+      toast.success(`Generated ${recs.length} personalized recommendations!`);
+    } catch (error) {
+      toast.error('Failed to generate recommendations');
+      console.error('Recommendation error:', error);
+    }
   };
 
   const getEmotionalRecommendations = () => {
-    const emotionState: EmotionState = {
-      mood: 'cozy',
-      energy: 'medium',
-      stress: 'low',
-      social: 'intimate'
-    };
-    
-    const recommendations = EmotionAwareFoodEngine.getEmotionalRecommendations(emotionState);
-    toast.success('Generated mood-based recommendations!');
-    return recommendations;
+    try {
+      const emotionState: EmotionState = {
+        mood: 'cozy',
+        energy: 'medium',
+        stress: 'low',
+        social: 'intimate'
+      };
+      
+      const recs = EmotionAwareFoodEngine.getEmotionalRecommendations(emotionState);
+      setEmotionalRecs(recs);
+      toast.success('Generated mood-based recommendations!');
+    } catch (error) {
+      toast.error('Failed to generate emotional recommendations');
+      console.error('Emotional recommendation error:', error);
+    }
+  };
+
+  const analyzeSensoryExperience = () => {
+    try {
+      // Use first 3 ingredients for demo
+      const selectedIngredients = ingredients.slice(0, 3);
+      const prediction = sensoryPredictor.predictSatisfaction(selectedIngredients);
+      setSensoryPrediction(prediction);
+      toast.success('Sensory analysis complete!');
+    } catch (error) {
+      toast.error('Failed to analyze sensory experience');
+      console.error('Sensory prediction error:', error);
+    }
   };
 
   return (
@@ -203,6 +243,28 @@ const AIHub = () => {
               <Button onClick={generateRecommendations} className="w-full">
                 Generate Smart Recommendations
               </Button>
+
+              {recommendations.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-medium">Generated Recommendations:</h4>
+                  {recommendations.map((rec, index) => (
+                    <div key={index} className="p-4 border rounded-lg">
+                      <div className="flex justify-between items-start mb-2">
+                        <h5 className="font-medium">Recommendation {index + 1}</h5>
+                        <Badge variant="outline">{rec.compatibility}% Compatible</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{rec.reasoning}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {rec.ingredients.map((ing: any, i: number) => (
+                          <Badge key={i} variant="secondary" className="text-xs">
+                            {ing.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -229,8 +291,9 @@ const AIHub = () => {
                   id="image-upload"
                 />
                 <label htmlFor="image-upload" className="cursor-pointer">
-                  <Button variant="outline" className="mb-2">
-                    Upload Food Image
+                  <Button variant="outline" className="mb-2" disabled={isAnalyzing}>
+                    <Upload className="h-4 w-4 mr-2" />
+                    {isAnalyzing ? 'Analyzing...' : 'Upload Food Image'}
                   </Button>
                   <p className="text-sm text-muted-foreground">
                     AI will identify the dish and provide recipes & nutrition
@@ -246,6 +309,41 @@ const AIHub = () => {
                     <Badge variant="outline">📊 Nutrition Analysis</Badge>
                     <Badge variant="outline">👨‍🍳 Recipe Suggestions</Badge>
                   </div>
+                </div>
+              )}
+
+              {imageResults.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-medium">Recognition Results:</h4>
+                  {imageResults.map((result, index) => (
+                    <div key={index} className="p-4 border rounded-lg">
+                      <div className="flex justify-between items-start mb-2">
+                        <h5 className="font-medium">{result.name}</h5>
+                        <Badge variant="outline">{result.confidence}% Confidence</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">Cuisine: {result.cuisine}</p>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <strong>Nutrition (per serving):</strong>
+                          <ul className="mt-1 space-y-1">
+                            <li>Calories: {result.nutrition.calories}</li>
+                            <li>Protein: {result.nutrition.protein}g</li>
+                            <li>Carbs: {result.nutrition.carbs}g</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <strong>Key Ingredients:</strong>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {result.ingredients.map((ing, i) => (
+                              <Badge key={i} variant="secondary" className="text-xs">
+                                {ing}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </CardContent>
@@ -294,15 +392,17 @@ const AIHub = () => {
               </div>
               
               <div className="flex gap-2">
-                <input
+                <Input
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleChatSubmit()}
                   placeholder="Ask about cooking, recipes, techniques..."
-                  className="flex-1 px-3 py-2 border rounded-md"
+                  className="flex-1"
                 />
-                <Button onClick={handleChatSubmit}>Send</Button>
+                <Button onClick={handleChatSubmit}>
+                  <Send className="h-4 w-4" />
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -348,6 +448,34 @@ const AIHub = () => {
                 </div>
               </div>
               
+              <Button onClick={analyzeSensoryExperience} className="w-full">
+                Analyze Sensory Experience
+              </Button>
+
+              {sensoryPrediction && (
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Satisfaction Prediction</h4>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="text-2xl font-bold text-primary">
+                        {Math.round(sensoryPrediction.overallSatisfaction)}%
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Overall Satisfaction
+                      </div>
+                    </div>
+                    <div className="text-sm">
+                      <strong>Recommendations:</strong>
+                      <ul className="mt-1 space-y-1">
+                        {sensoryPrediction.recommendations.map((rec, i) => (
+                          <li key={i}>• {rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="bg-primary/10 p-4 rounded-lg">
                 <h4 className="font-medium mb-2 flex items-center gap-2">
                   <Lightbulb className="h-4 w-4" />
@@ -393,6 +521,28 @@ const AIHub = () => {
               <Button onClick={getEmotionalRecommendations} className="w-full">
                 Get Mood-Based Recommendations
               </Button>
+
+              {emotionalRecs.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-medium">Emotional Recommendations:</h4>
+                  {emotionalRecs.map((rec, index) => (
+                    <div key={index} className="p-4 border rounded-lg">
+                      <div className="flex justify-between items-start mb-2">
+                        <h5 className="font-medium">Mood Match {index + 1}</h5>
+                        <Badge variant="outline">{rec.confidence}% Match</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{rec.reasoning}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {rec.ingredients.map((ing: any, i: number) => (
+                          <Badge key={i} variant="secondary" className="text-xs">
+                            {ing.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

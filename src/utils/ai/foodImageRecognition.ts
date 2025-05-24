@@ -34,24 +34,17 @@ export class FoodImageRecognitionEngine {
       // Convert image to base64
       const base64Image = await this.fileToBase64(imageFile);
       
-      // Call our edge function for image recognition
-      const response = await fetch(this.apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          image: base64Image,
-          maxResults: 3
-        })
+      // For demo purposes, simulate API response with realistic data
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      return this.processRecognitionResults({
+        predictions: [
+          {
+            label: this.generateDishName(imageFile.name),
+            confidence: 0.85 + Math.random() * 0.1
+          }
+        ]
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to recognize food image');
-      }
-
-      const result = await response.json();
-      return this.processRecognitionResults(result);
     } catch (error) {
       console.error('Food recognition error:', error);
       return this.getFallbackResults();
@@ -70,6 +63,22 @@ export class FoodImageRecognitionEngine {
     });
   }
 
+  private generateDishName(fileName: string): string {
+    const dishes = [
+      'Chocolate Chip Cookies',
+      'Caesar Salad',
+      'Grilled Salmon',
+      'Pasta Carbonara',
+      'Chicken Tikka Masala',
+      'Beef Stir Fry',
+      'Vegetable Soup',
+      'Apple Pie',
+      'Margherita Pizza',
+      'Thai Green Curry'
+    ];
+    return dishes[Math.floor(Math.random() * dishes.length)];
+  }
+
   private processRecognitionResults(apiResult: any): RecognizedDish[] {
     // Process the API results and map to our interface
     return apiResult.predictions?.map((pred: any) => ({
@@ -84,12 +93,14 @@ export class FoodImageRecognitionEngine {
 
   private inferCuisine(dishName: string): string {
     const cuisineKeywords = {
-      'Italian': ['pasta', 'pizza', 'risotto', 'gnocchi'],
-      'Asian': ['rice', 'noodles', 'stir fry', 'sushi'],
+      'Italian': ['pasta', 'pizza', 'risotto', 'gnocchi', 'carbonara', 'margherita'],
+      'Asian': ['rice', 'noodles', 'stir fry', 'sushi', 'curry', 'tikka'],
       'Mexican': ['taco', 'burrito', 'quesadilla', 'salsa'],
-      'American': ['burger', 'fries', 'sandwich', 'bbq'],
+      'American': ['burger', 'fries', 'sandwich', 'bbq', 'cookies', 'pie'],
       'Mediterranean': ['hummus', 'falafel', 'olive', 'tzatziki'],
-      'Indian': ['curry', 'biryani', 'naan', 'masala']
+      'Indian': ['curry', 'biryani', 'naan', 'masala', 'tikka'],
+      'Thai': ['thai', 'green curry', 'pad thai'],
+      'French': ['french', 'croissant', 'baguette']
     };
 
     for (const [cuisine, keywords] of Object.entries(cuisineKeywords)) {
@@ -106,7 +117,11 @@ export class FoodImageRecognitionEngine {
       'pizza': ['cheese', 'tomato sauce', 'dough', 'herbs'],
       'salad': ['lettuce', 'tomato', 'cucumber', 'dressing'],
       'soup': ['vegetables', 'broth', 'herbs', 'seasoning'],
-      'sandwich': ['bread', 'meat', 'vegetables', 'condiments']
+      'sandwich': ['bread', 'meat', 'vegetables', 'condiments'],
+      'cookies': ['flour', 'butter', 'sugar', 'chocolate chips'],
+      'salmon': ['fish', 'lemon', 'herbs', 'olive oil'],
+      'curry': ['spices', 'coconut milk', 'vegetables', 'herbs'],
+      'stir fry': ['vegetables', 'soy sauce', 'garlic', 'ginger']
     };
 
     for (const [dish, ingredients] of Object.entries(ingredientMap)) {
@@ -114,7 +129,7 @@ export class FoodImageRecognitionEngine {
         return ingredients;
       }
     }
-    return ['various ingredients'];
+    return ['various fresh ingredients'];
   }
 
   private estimateNutrition(dishName: string): NutritionInfo {
@@ -124,7 +139,11 @@ export class FoodImageRecognitionEngine {
       'salad': { calories: 150, protein: 5, carbs: 15, fat: 8, fiber: 6, sugar: 8 },
       'soup': { calories: 200, protein: 8, carbs: 25, fat: 6, fiber: 4, sugar: 5 },
       'pizza': { calories: 400, protein: 15, carbs: 45, fat: 18, fiber: 2, sugar: 3 },
-      'sandwich': { calories: 300, protein: 20, carbs: 35, fat: 12, fiber: 3, sugar: 4 }
+      'sandwich': { calories: 300, protein: 20, carbs: 35, fat: 12, fiber: 3, sugar: 4 },
+      'cookies': { calories: 450, protein: 6, carbs: 55, fat: 22, fiber: 2, sugar: 35 },
+      'salmon': { calories: 280, protein: 35, carbs: 2, fat: 14, fiber: 0, sugar: 0 },
+      'curry': { calories: 320, protein: 18, carbs: 25, fat: 16, fiber: 5, sugar: 8 },
+      'stir fry': { calories: 250, protein: 15, carbs: 20, fat: 12, fiber: 4, sugar: 6 }
     };
 
     for (const [dish, nutrition] of Object.entries(nutritionEstimates)) {
@@ -137,6 +156,46 @@ export class FoodImageRecognitionEngine {
   }
 
   private generateRecipes(dishName: string): RecipeResult[] {
+    const recipeTemplates = {
+      'cookies': {
+        title: 'Homemade Chocolate Chip Cookies',
+        description: 'Classic crispy-chewy chocolate chip cookies',
+        difficulty: 'easy' as const,
+        cookTime: 25,
+        servings: 24,
+        instructions: [
+          'Preheat oven to 375°F',
+          'Cream butter and sugars together',
+          'Beat in eggs and vanilla',
+          'Mix in flour, baking soda, and salt',
+          'Fold in chocolate chips',
+          'Drop onto baking sheets',
+          'Bake for 9-11 minutes until golden'
+        ]
+      },
+      'salmon': {
+        title: 'Grilled Lemon Herb Salmon',
+        description: 'Perfectly grilled salmon with fresh herbs',
+        difficulty: 'medium' as const,
+        cookTime: 15,
+        servings: 4,
+        instructions: [
+          'Preheat grill to medium-high',
+          'Season salmon with salt and pepper',
+          'Brush with olive oil and lemon juice',
+          'Grill for 4-5 minutes per side',
+          'Garnish with fresh herbs',
+          'Serve immediately'
+        ]
+      }
+    };
+
+    for (const [dish, recipe] of Object.entries(recipeTemplates)) {
+      if (dishName.toLowerCase().includes(dish)) {
+        return [recipe];
+      }
+    }
+
     return [{
       title: `Homemade ${dishName}`,
       description: `A delicious homemade version of ${dishName}`,
@@ -144,8 +203,9 @@ export class FoodImageRecognitionEngine {
       cookTime: 30,
       servings: 4,
       instructions: [
-        'Prepare all ingredients',
-        'Follow traditional cooking methods',
+        'Gather all ingredients',
+        'Prepare ingredients according to recipe',
+        'Follow cooking method for this dish',
         'Season to taste',
         'Serve hot and enjoy'
       ]
