@@ -14,6 +14,7 @@ import { Menu, Sun, Moon, LogOut, User } from "lucide-react";
 import { Toggle } from "@/components/ui/toggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface NavLink {
   path: string;
