@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,7 @@ import SensoryJournal from "./pages/SensoryJournal";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import RequireAuth from "./components/auth/RequireAuth";
+import AIHub from "./pages/AIHub";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +50,11 @@ const App = () => (
                   <Route path="/sensory-journal" element={
                     <RequireAuth>
                       <SensoryJournal />
+                    </RequireAuth>
+                  } />
+                  <Route path="/ai-hub" element={
+                    <RequireAuth>
+                      <AIHub />
                     </RequireAuth>
                   } />
                   <Route path="*" element={<NotFound />} />
