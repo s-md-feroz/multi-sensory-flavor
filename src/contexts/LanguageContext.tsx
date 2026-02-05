@@ -69,7 +69,17 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Flavor Profile
     flavorProfile: "Flavor Profile",
-    flavorDescription: "Flavor Description"
+    flavorDescription: "Flavor Description",
+
+    // AI Suggestions
+    aiSuggestions: "AI Suggestions",
+    showAiSuggestions: "Show AI Suggestions",
+    hideAiSuggestions: "Hide AI Suggestions",
+    rateYourCombination: "Rate Your Flavor Combination",
+    howGoodWasThis: "How good was this combination?",
+    learningFromYourChoice: "Learning from your choice!",
+    willRememberThisPairing: "AI will remember this pairing for future suggestions.",
+    aiWillUseBetter: "AI will use this to improve future suggestions"
   },
   "हिन्दी": {
     // Common translations
@@ -113,7 +123,17 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Flavor Profile
     flavorProfile: "स्वाद प्रोफ़ाइल",
-    flavorDescription: "स्वाद विवरण"
+    flavorDescription: "स्वाद विवरण",
+
+    // AI Suggestions
+    aiSuggestions: "एआई सुझाव",
+    showAiSuggestions: "एआई सुझाव दिखाएं",
+    hideAiSuggestions: "एआई सुझाव छुपाएं",
+    rateYourCombination: "अपने स्वाद संयोजन को रेट करें",
+    howGoodWasThis: "यह संयोजन कितना अच्छा था?",
+    learningFromYourChoice: "आपकी पसंद से सीख रहे हैं!",
+    willRememberThisPairing: "एआई भविष्य के सुझावों के लिए इस जोड़ी को याद रखेगा।",
+    aiWillUseBetter: "एआई भविष्य के सुझावों को बेहतर बनाने के लिए इसका उपयोग करेगा"
   },
   "Español": {
     // Common translations
@@ -157,7 +177,17 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Flavor Profile
     flavorProfile: "Perfil de Sabor",
-    flavorDescription: "Descripción del Sabor"
+    flavorDescription: "Descripción del Sabor",
+
+    // AI Suggestions
+    aiSuggestions: "Sugerencias de IA",
+    showAiSuggestions: "Mostrar Sugerencias de IA",
+    hideAiSuggestions: "Ocultar Sugerencias de IA",
+    rateYourCombination: "Califica Tu Combinación de Sabores",
+    howGoodWasThis: "¿Qué tan buena fue esta combinación?",
+    learningFromYourChoice: "¡Aprendiendo de tu elección!",
+    willRememberThisPairing: "La IA recordará este maridaje para futuras sugerencias.",
+    aiWillUseBetter: "La IA usará esto para mejorar las sugerencias futuras"
   },
   "Français": {
     // Common translations
@@ -201,7 +231,17 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Flavor Profile
     flavorProfile: "Profil de Saveur",
-    flavorDescription: "Description de la Saveur"
+    flavorDescription: "Description de la Saveur",
+
+    // AI Suggestions
+    aiSuggestions: "Suggestions IA",
+    showAiSuggestions: "Afficher les Suggestions IA",
+    hideAiSuggestions: "Masquer les Suggestions IA",
+    rateYourCombination: "Évaluez Votre Combinaison de Saveurs",
+    howGoodWasThis: "Qu'en pensiez-vous de cette combinaison ?",
+    learningFromYourChoice: "Apprentissage à partir de votre choix !",
+    willRememberThisPairing: "L'IA se souviendra de cet appairage pour les suggestions futures.",
+    aiWillUseBetter: "L'IA l'utilisera pour améliorer les suggestions futures"
   },
   "日本語": {
     // Common translations
@@ -245,7 +285,17 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Flavor Profile
     flavorProfile: "フレーバープロファイル",
-    flavorDescription: "味の説明"
+    flavorDescription: "味の説明",
+
+    // AI Suggestions
+    aiSuggestions: "AI提案",
+    showAiSuggestions: "AI提案を表示",
+    hideAiSuggestions: "AI提案を非表示",
+    rateYourCombination: "あなたのフレーバーの組み合わせを評価してください",
+    howGoodWasThis: "この組み合わせはどのくらい良かったですか?",
+    learningFromYourChoice: "あなたの選択から学習中!",
+    willRememberThisPairing: "AIは今後の提案のためにこのペアリングを記憶します。",
+    aiWillUseBetter: "AIはこれを使用して今後の提案を改善します"
   }
 };
 
